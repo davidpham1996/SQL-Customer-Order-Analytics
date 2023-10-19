@@ -1,0 +1,177 @@
+Project 2: Customer & Order Analytics
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 1: How many orders were placed in January?
+
+SELECT DISTINCT count(orderID)
+FROM JanSales
+
+# 9,723 orders were placed in January.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 2: How many of those orders (in January) were for an iPhone?
+
+SELECT DISTINCT count(orderID)
+FROM JanSales
+WHERE product LIKE '%IPhone%';
+
+# Of the 9,723 total orders in January, a total of 379 orders were made for Iphones. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 3: What was the highest priced product sold in February? How much does it cost? 
+
+SELECT Product, Price, Quantity
+FROM FebSales
+ORDER BY Price DESC
+
+# The Macbook Pro Laptop was the highest product sold in February, priced at $1,700. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 4: What was the total sales revenue from that product (from Question 3)?
+
+SELECT sum(price)
+FROM FebSales
+WHERE product = 'Macbook Pro Laptop'
+
+# $467,500 was made from selling Macbook Pros. 
+
+* Data Validation *
+
+SELECT count(product)
+FROM FebSales
+WHERE product = 'Macbook Pro Laptop'
+
+# 275 total Macbook Pros were sold in Feb. 275 (total sold) * 1700 (price per laptop) = $467,500.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 5: Which product was the cheapest one sold in January, and what was the price?
+
+SELECT DISTINCT(Product), Price
+FROM JanSales
+ORDER BY Price ASC
+
+# The cheapest product sold in January were the 4-pack AAA batteries, priced at $2.99 per unit. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 6: What is the total revenue made in January? 
+# Revenue can be calculated using the number of products sold and the price of the products.
+
+SELECT round(sum(price * quantity),2)
+AS Total_Revenue
+FROM JanSales
+
+# Rounded to (2) decimal places, total revenue from all products was $1,815,335.12.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 7: What were the top (5) selling items in January (by total sales? What was the total revenue from each item?
+
+SELECT product, round(sum(price * quantity),2)
+AS Total_Revenue
+FROM JanSales
+GROUP BY Product
+ORDER BY Total_Revenue DESC
+LIMIT 5;
+
+# The top (5) selling items in January were: 
+
+1) Macbook Pro Laptop: Total $399,500
+2) IPhone: Total $265,300
+3) ThinkPad Laptop: Total $216,997.83
+4) Google Phone: Total: $190,800
+5) Apple Airpods Headphones	Total: $122,100
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 8: List all the products sold in Los Angeles in February, and include how many of each were sold.
+
+SELECT Product, sum(Quantity)
+FROM FebSales
+GROUP BY Product
+
+# Products sold in February, and their total amounts per product: 
+
+20in Monitor:	246 total 
+27in 4K Gaming Monitor:	428 total 
+27in FHD Monitor:	475 total 
+34in Ultrawide Monitor:	418 total 
+AA Batteries (4-pack):	1736 total 
+AAA Batteries (4-pack):	1975 total 
+Apple Airpods Headphones:	1013 total 
+Bose SoundSport Headphones:	844 total 
+Flatscreen TV:	314 total 
+Google Phone:	381 total 
+LG Dryer:	38 total 
+LG Washing Machine:	40 total 
+Lightning Charging Cable:	1497 total 
+Macbook Pro Laptop:	275 total 
+ThinkPad Laptop:	277 total 
+USB-C Charging Cable:	1654 total 
+Vareebadd Phone:	129 total 
+Wired Headphones:	1282 total 
+iPhone:	439 total 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 9: How many customers ordered more than 2 products at a time in March, and what was the average amount spent for those customers?
+
+SELECT count(distinct acctnum), round(avg(quantity * price),2) AS Average_Spend
+FROM MarSales Mar
+LEFT JOIN customers cust 
+ON Mar.orderID = cust.order_id
+WHERE quantity > 2
+
+# In March, (34) customers bought over (2) items at a time. Of those customers, they spent $3.35 on average. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 10: How many of each type of headphone were sold in April?
+
+SELECT product AS HeadPhone, 
+Count(product) AS Total_Sold
+FROM AprSales
+WHERE product LIKE ('%Headphones%')
+GROUP BY product
+ORDER BY Total_Sold DESC;
+
+# In April, total Headphone sales consisted of the following: 
+
+1) Wired Headphones:	1890 sold
+2) Apple Airpods Headphones:	1515 sold
+3) Bose SoundSport Headphones: 1280 sold
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 11: What was the average amount spent per account in April? 
+
+SELECT round(avg(quantity * price),2) AS Average_Spend
+FROM AprSales Apr
+LEFT JOIN customers cust 
+ON Apr.orderID = cust.order_id
+
+# The average customer account spend $173.52 in April. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 12: Which product brought in the most revenue in May and how much revenue did it bring in total?
+
+SELECT Product, round(sum(price * quantity),2)
+AS Total_Revenue
+FROM MaySales
+GROUP BY Product
+ORDER BY Total_Revenue DESC
+LIMIT 1
+
+# In May, the "Macbook Pro Laptop" brought in the most revenue, totaling to $787,100.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question 13: Which customer account spent the most in May? What did they buy? What was their total spend?
+
+# In May, the customer with OrderID 200528 spent the most, spending $3,400 from (2) Macbook Pro Laptops. 
